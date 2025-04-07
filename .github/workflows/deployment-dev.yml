@@ -31,3 +31,4 @@ jobs:
                 elasticsearch:7.17.13
             docker exec elasticsearch-dev elasticsearch-plugin install analysis-nori --batch
             docker restart elasticsearch-dev
+            
