@@ -24,6 +24,7 @@ jobs:
             docker run -d \
                 --name elasticsearch-dev \
                 --network backend \
+                -e "discovery.type=single-node"
                 -e "xpack.security.enabled=true" \
                 -e "ELASTIC_PASSWORD=${{ secrets.PASSWORD_DEV }}" \
                 -p 9200:9200 \
