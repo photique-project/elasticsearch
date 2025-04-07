@@ -1,0 +1,33 @@
+name: 개발서버 Elasticsearch 배포
+
+on:
+  pull_request:
+    branches:
+      - "develop"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: EC2 연결 및 Elasticsearch 이미지 실행
+        uses: appleboy/ssh-action@master 
+        with:
+          username: ubuntu
+          host: ${{ secrets.HOST_DEV }}
+          key: ${{ secrets.KEY }}
+          script: |
+            docker stop elasticsearch-dev
+            docker rm elasticsearch-dev
+            docker rmi elasticsearch:7.17.13
+            docker pull elasticsearch:7.17.13
+            docker run -d \
+                --name elasticsearch-dev \
+                --network backend \
+                -e "xpack.security.enabled=true" \
+                -e "ELASTIC_PASSWORD=${{ secrets.PASSWORD_DEV }}" \
+                -p 9200:9200 \
+                -v /home/ubuntu/elasticsearch:/usr/share/elasticsearch/data \
+                elasticsearch:7.17.13
+            docker exec elasticsearch-dev elasticsearch-plugin install analysis-nori --batch
+            docker restart elasticsearch-dev
