@@ -19,8 +19,8 @@ jobs:
           script: |
             docker stop elasticsearch-dev
             docker rm elasticsearch-dev
-            docker rmi elasticsearch:8.16.4
-            docker pull elasticsearch:8.16.4
+            docker rmi elasticsearch:7.17.4
+            docker pull elasticsearch:7.17.4
             mkdir -p /home/ubuntu/elasticsearch-data
             sudo chmod -R 777 /home/ubuntu/elasticsearch-data
             docker run -d \
@@ -31,7 +31,7 @@ jobs:
                 -e "ELASTIC_PASSWORD=${{ secrets.PASSWORD_DEV }}" \
                 -p 9200:9200 \
                 -v /home/ubuntu/elasticsearch-data:/usr/share/elasticsearch/data \
-                elasticsearch:8.16.4
+                elasticsearch:7.17.4
             docker exec elasticsearch-dev elasticsearch-plugin install analysis-nori --batch
             docker restart elasticsearch-dev
             
