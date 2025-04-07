@@ -21,6 +21,8 @@ jobs:
             docker rm elasticsearch-dev
             docker rmi elasticsearch:8.16.4
             docker pull elasticsearch:8.16.4
+            mkdir -p /home/ubuntu/elasticsearch
+            sudo chmod -R 777 /home/ubuntu/elasticsearch
             docker run -d \
                 --name elasticsearch-dev \
                 --network backend \
@@ -30,7 +32,6 @@ jobs:
                 -p 9200:9200 \
                 -v /home/ubuntu/elasticsearch:/usr/share/elasticsearch/data \
                 elasticsearch:8.16.4
-            sudo chmod -R 777 /home/ubuntu/elasticsearch
             docker exec elasticsearch-dev elasticsearch-plugin install analysis-nori --batch
             docker restart elasticsearch-dev
             
