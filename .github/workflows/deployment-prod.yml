@@ -1,0 +1,38 @@
+name: 프로덕트 서버 Elasticsearch 배포
+
+on:
+  pull_request:
+    branches:
+      - release
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: EC2 연결 및 Elasticsearch 이미지 실행
+        uses: appleboy/ssh-action@master 
+        with:
+          username: photique0538
+          host: ${{ secrets.HOST_PROD }}
+          key: ${{ secrets.KEY_PROD }}
+          script: |
+            docker stop elasticsearch-prod
+            docker rm elasticsearch-prod
+            docker rmi elasticsearch:7.17.4
+            docker pull elasticsearch:7.17.4
+            mkdir -p /home/ubuntu/elasticsearch-data
+            sudo chmod -R 777 /home/ubuntu/elasticsearch-data
+            echo  echo "🔐 PASSWORD_DEV is: ${{ secrets.PASSWORD_PROD }}"
+            docker run -d \
+                --name elasticsearch-prod \
+                --network backend \
+                -e "discovery.type=single-node" \
+                -e "xpack.security.enabled=true" \
+                -e "ELASTIC_PASSWORD=${{ secrets.PASSWORD_PROD }}" \
+                -p 9200:9200 \
+                -v /home/ubuntu/elasticsearch-data:/usr/share/elasticsearch/data \
+                elasticsearch:7.17.4
+            docker exec elasticsearch-prod elasticsearch-plugin install analysis-nori --batch
+            docker restart elasticsearch-prod
+            
