@@ -23,7 +23,6 @@ jobs:
             docker pull elasticsearch:7.17.4
             mkdir -p /home/ubuntu/elasticsearch-data
             sudo chmod -R 777 /home/ubuntu/elasticsearch-data
-            echo  echo "🔐 PASSWORD_DEV is: ${{ secrets.PASSWORD_DEV }}"
             docker run -d \
                 --name elasticsearch-dev \
                 --network backend \

@@ -21,9 +21,8 @@ jobs:
             docker rm elasticsearch-prod
             docker rmi elasticsearch:7.17.4
             docker pull elasticsearch:7.17.4
-            mkdir -p /home/ubuntu/elasticsearch-data
-            sudo chmod -R 777 /home/ubuntu/elasticsearch-data
-            echo  echo "🔐 PASSWORD_DEV is: ${{ secrets.PASSWORD_PROD }}"
+            mkdir -p /home/photique0538/elasticsearch-data
+            sudo chmod -R 777 /home/photique0538/elasticsearch-data
             docker run -d \
                 --name elasticsearch-prod \
                 --network backend \
@@ -31,7 +30,7 @@ jobs:
                 -e "xpack.security.enabled=true" \
                 -e "ELASTIC_PASSWORD=${{ secrets.PASSWORD_PROD }}" \
                 -p 9200:9200 \
-                -v /home/ubuntu/elasticsearch-data:/usr/share/elasticsearch/data \
+                -v /home/photique0538/elasticsearch-data:/usr/share/elasticsearch/data \
                 elasticsearch:7.17.4
             docker exec elasticsearch-prod elasticsearch-plugin install analysis-nori --batch
             docker restart elasticsearch-prod
